@@ -7,6 +7,8 @@ class DummySettings:
     values = {
         "document.chunking.merge_cross_page_continuations": True,
         "document.text_cleanup.enabled": True,
+        "document.pdf.table_ocr.enabled": True,
+        "document.pdf.table_keywords": ["表", "检查项目", "键宽"],
     }
 
     @property
@@ -75,3 +77,38 @@ def test_rows_to_facts_uses_header_columns_generically():
     ]
 
     assert parser._rows_to_facts(rows) == "键宽 b: 平键=1.0; 半圆键=1.0; 楔键=1.5"
+
+
+def test_layout_ocr_rows_keep_cells_and_bboxes():
+    parser = DocumentParser(store=None, settings=DummySettings())
+    lines = parser._blocks_to_layout_lines(
+        [
+            {"text": "检查", "bbox": [10, 10, 30, 25], "confidence": 0.9},
+            {"text": "项目", "bbox": [32, 10, 58, 25], "confidence": 0.9},
+            {"text": "平键", "bbox": [140, 10, 170, 25], "confidence": 0.8},
+            {"text": "键宽", "bbox": [10, 45, 45, 60], "confidence": 0.85},
+            {"text": "1.0", "bbox": [140, 45, 165, 60], "confidence": 0.95},
+        ]
+    )
+
+    rows, cells = parser._layout_lines_to_rows(lines)
+
+    assert rows == [["检查项目", "平键"], ["键宽", "1.0"]]
+    assert cells[0][0]["bbox"] == [10, 10, 58, 25]
+    assert cells[1][1]["confidence"] == 0.95
+
+
+def test_text_keyword_table_marks_extraction_method(tmp_path):
+    parser = DocumentParser(store=None, settings=DummySettings())
+    table = parser._extract_table_from_text_keywords(
+        "doc",
+        {
+            "page_no": 2,
+            "text": "表 1 检查项目\n检查项目  平键\n键宽 b  1.0",
+            "ocr_confidence": 0.7,
+        },
+        tmp_path,
+    )
+
+    assert table["extraction_method"] == "text_keywords"
+    assert table["rows"][1] == ["检查项目", "平键"]

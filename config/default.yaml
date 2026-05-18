@@ -33,6 +33,14 @@ document:
     empty_page_min_chars: 20
     text_pdf_min_chars_per_page: 20
     low_ocr_confidence: 0.55
+    table_ocr:
+      enabled: true
+      psm: 11
+      crop_padding: 15
+      upscale: 1.0
+      grid_dark_threshold: 180
+      grid_horizontal_ratio: 0.45
+      grid_vertical_ratio: 0.45
     table_keywords:
       - 表
       - 公差
