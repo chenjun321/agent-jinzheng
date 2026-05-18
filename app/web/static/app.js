@@ -25,6 +25,22 @@ function setStatus(text) {
   document.getElementById("status").textContent = text;
 }
 
+function formatApiError(error) {
+  const message = error?.message || String(error);
+  try {
+    const parsed = JSON.parse(message);
+    return parsed.detail || message;
+  } catch {
+    return message;
+  }
+}
+
+function showError(prefix, error) {
+  const message = formatApiError(error);
+  console.error(prefix, error);
+  alert(`${prefix}：${message}`);
+}
+
 async function api(path, options = {}) {
   const res = await fetch(path, options);
   if (!res.ok) {
@@ -200,13 +216,18 @@ async function uploadAndParse(event) {
     return;
   }
   setStatus("Parsing");
-  const form = new FormData();
-  form.append("file", file);
-  const data = await api("/api/upload", { method: "POST", body: form });
-  state.docId = data.document.id;
-  await loadDocuments();
-  await selectDocument(state.docId);
-  setStatus("Ready");
+  try {
+    const form = new FormData();
+    form.append("file", file);
+    const data = await api("/api/upload", { method: "POST", body: form });
+    state.docId = data.document.id;
+    await loadDocuments();
+    await selectDocument(state.docId);
+  } catch (error) {
+    showError("解析失败", error);
+  } finally {
+    setStatus("Ready");
+  }
 }
 
 async function askQuestion(question) {
@@ -221,16 +242,21 @@ async function askQuestion(question) {
   }
   document.getElementById("question").value = q;
   setStatus("Asking");
-  const data = await api("/api/ask", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ doc_id: state.docId, question: q, session_id: state.sessionId }),
-  });
-  state.sessionId = data.session_id || state.sessionId;
-  localStorage.setItem("agent_jinzheng_session_id", state.sessionId);
-  state.lastQaLogId = data.qa_log_id;
-  renderAnswer(data);
-  setStatus("Ready");
+  try {
+    const data = await api("/api/ask", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ doc_id: state.docId, question: q, session_id: state.sessionId }),
+    });
+    state.sessionId = data.session_id || state.sessionId;
+    localStorage.setItem("agent_jinzheng_session_id", state.sessionId);
+    state.lastQaLogId = data.qa_log_id;
+    renderAnswer(data);
+  } catch (error) {
+    showError("提问失败", error);
+  } finally {
+    setStatus("Ready");
+  }
 }
 
 function renderAnswer(data) {
@@ -353,26 +379,36 @@ async function deleteDocument(docId, fileName) {
     return;
   }
   setStatus("Deleting");
-  await api(`/api/documents/${docId}`, { method: "DELETE" });
-  if (state.docId === docId) {
-    state.docId = null;
-    document.getElementById("docMeta").textContent = "尚未选择文档";
-    document.getElementById("pagePreview").textContent = "";
-    document.getElementById("tablePreview").textContent = "";
+  try {
+    await api(`/api/documents/${docId}`, { method: "DELETE" });
+    if (state.docId === docId) {
+      state.docId = null;
+      document.getElementById("docMeta").textContent = "尚未选择文档";
+      document.getElementById("pagePreview").textContent = "";
+      document.getElementById("tablePreview").textContent = "";
+    }
+    await loadDocuments();
+  } catch (error) {
+    showError("删除失败", error);
+  } finally {
+    setStatus("Ready");
   }
-  await loadDocuments();
-  setStatus("Ready");
 }
 
 async function submitFeedback(value) {
   if (!state.lastQaLogId) return;
-  await api("/api/feedback", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ qa_log_id: state.lastQaLogId, feedback: value }),
-  });
-  setStatus(value === "resolved" ? "Resolved" : "Marked");
-  await loadUnresolvedFeedback();
+  try {
+    await api("/api/feedback", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ qa_log_id: state.lastQaLogId, feedback: value }),
+    });
+    setStatus(value === "resolved" ? "Resolved" : "Marked");
+    await loadUnresolvedFeedback();
+  } catch (error) {
+    showError("反馈提交失败", error);
+    setStatus("Ready");
+  }
 }
 
 function formatDateTime(value) {
