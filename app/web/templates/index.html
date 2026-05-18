@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Agent Jinzheng</title>
+    <link rel="stylesheet" href="/static/style.css?v=20260518-quality-stats" />
+  </head>
+  <body>
+    <main class="shell">
+      <header class="topbar">
+        <div>
+          <h1>Agent Jinzheng</h1>
+          <p>扫描 PDF 文档解析、RAG 检索与证据问答</p>
+        </div>
+        <div id="status" class="status">Ready</div>
+      </header>
+
+      <section class="layout">
+        <aside class="panel">
+          <h2>文档</h2>
+          <form id="uploadForm" class="upload">
+            <input id="pdfFile" type="file" accept="application/pdf" />
+            <button type="submit">上传并解析</button>
+          </form>
+          <button id="loadDocs" class="secondary">刷新文档</button>
+          <div id="documents" class="list"></div>
+
+          <div class="quality-panel">
+            <div class="quality-head">
+              <h2>质量反馈</h2>
+              <button id="loadFeedback" class="icon-btn" type="button">刷新</button>
+            </div>
+            <div id="feedbackSummary" class="meta muted">暂无未解决反馈</div>
+            <div id="unresolvedFeedback" class="feedback-list"></div>
+          </div>
+        </aside>
+
+        <section class="workspace">
+          <div class="panel">
+            <h2>解析结果</h2>
+            <div id="docMeta" class="meta muted">尚未选择文档</div>
+            <h3>正文片段</h3>
+            <pre id="pagePreview" class="preview"></pre>
+            <h3>表格结果</h3>
+            <div id="tablePreview" class="tables"></div>
+          </div>
+
+          <div class="panel">
+            <h2>QA</h2>
+            <div id="quickQuestions" class="quick"></div>
+            <div class="qa-row">
+              <textarea id="question" rows="3" placeholder="输入你想问文档的问题"></textarea>
+              <button id="askBtn">提问</button>
+            </div>
+            <div id="answer" class="answer"></div>
+          </div>
+
+          <div id="qaLogDetail" class="panel qa-detail" hidden></div>
+        </section>
+      </section>
+    </main>
+    <script src="/static/app.js?v=20260518-quality-stats"></script>
+  </body>
+</html>

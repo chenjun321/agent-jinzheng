@@ -1,0 +1,116 @@
+app:
+  project_name: Agent Jinzheng
+
+paths:
+  upload_dir: data/input
+  processed_dir: data/processed
+  sqlite_db_path: data/processed/app.db
+  milvus_lite_uri: data/processed/milvus_jinzheng.db
+
+models:
+  provider: dashscope
+  base_url: https://dashscope.aliyuncs.com/compatible-mode/v1
+  chat_model: qwen-plus
+  embedding_model: text-embedding-v4
+  embedding_dim: 1024
+  max_input_tokens: 6000
+  max_output_tokens: 900
+  temperature: 0.1
+  timeout_seconds: 60
+  retry_times: 2
+
+document:
+  supported_types:
+    - pdf
+  active_parser: pdf
+  pdf:
+    max_pages: 300
+    render_zoom: 2.0
+    ocr_engine: tesseract
+    ocr_lang: chi_sim
+    tessdata_dir: .tessdata
+    save_page_images: true
+    empty_page_min_chars: 20
+    text_pdf_min_chars_per_page: 20
+    low_ocr_confidence: 0.55
+    table_keywords:
+      - 表
+      - 公差
+      - 尺寸
+      - mm
+      - 键宽
+      - 键高
+      - 极限偏差
+  chunking:
+    strategy: clause_first
+    chunk_size: 1000
+    chunk_overlap: 120
+    merge_cross_page_continuations: true
+    max_snippet_chars: 700
+  text_cleanup:
+    enabled: true
+    merge_orphan_lines: true
+    merge_wrapped_lines: true
+    orphan_line_max_chars: 3
+    short_line_max_chars: 24
+    quote_noise_line_max_chars: 12
+
+rag:
+  vector_backend: milvus
+  vector_top_k: 20
+  keyword_top_k: 20
+  candidate_top_k: 30
+  final_top_k: 5
+  vector_weight: 0.75
+  keyword_weight: 0.35
+  rank_decay_weight: 0.05
+  table_boost: 0.15
+  clause_id_boost: 0.12
+  dedup_similarity_threshold: 0.92
+  dedup_same_page_distance: 1
+  rerank:
+    enabled: true
+    strategy: rule
+    title_match_boost: 0.08
+    ocr_confidence_weight: 0.08
+
+agent:
+  answer_min_score: 0.08
+  answer_min_confidence: 0.15
+  out_of_scope_min_score: 0.45
+  force_citation: true
+  evidence_for_answer: 3
+  refuse_below_confidence: true
+  refusal_message: 当前文档中没有找到足够依据回答该问题。
+  out_of_scope_keywords:
+    - 发动机
+    - 股票
+    - 天气
+    - 旅游
+    - 做饭
+  multi_question:
+    enabled: true
+    separators:
+      - ？
+      - "?"
+      - ；
+      - ;
+      - "\n"
+  few_shot:
+    enabled: true
+    examples:
+      - question: 文档规定的适用范围是什么？
+        answer_style: 先概括结论，再列出来源页码和条款。
+      - question: 文档没有提到的内容可以回答吗？
+        answer_style: 明确拒答，并说明没有找到足够依据。
+
+ui:
+  show_ocr_text: true
+  show_evidence: true
+  show_confidence: true
+  allow_delete_document: true
+  enable_feedback: true
+
+session:
+  idle_timeout_minutes: 30
+  persist_on_expire: true

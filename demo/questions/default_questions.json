@@ -1,0 +1,146 @@
+[
+  {
+    "id": "q1_scope",
+    "question": "这个标准适用于什么范围？",
+    "type": "clause",
+    "expect_answerable": true,
+    "expect_action": "answer",
+    "expected_keywords": ["除花键外", "各种键", "技术要求", "验收检查", "标志与包装"],
+    "expected_citation": true
+  },
+  {
+    "id": "q2_normative_references",
+    "question": "规范性引用文件包括哪些标准？",
+    "type": "clause",
+    "expect_answerable": true,
+    "expect_action": "answer",
+    "expected_keywords": ["GB/T 1184", "GB/T 2828.1", "GB/T 11334"],
+    "expected_citation": true
+  },
+  {
+    "id": "q3_tensile_strength",
+    "question": "键的抗拉强度要求是多少？",
+    "type": "clause",
+    "expect_answerable": true,
+    "expect_action": "answer",
+    "expected_keywords": ["抗拉强度", "590 MPa"],
+    "expected_citation": true
+  },
+  {
+    "id": "q4_surface_defects",
+    "question": "键表面不允许有哪些缺陷？",
+    "type": "clause",
+    "expect_answerable": true,
+    "expect_action": "answer",
+    "expected_keywords": ["裂纹", "氧化皮", "毛刺"],
+    "expected_citation": true
+  },
+  {
+    "id": "q5_rounding_radius",
+    "question": "半圆键的键长两端倒圆角半径有什么要求？",
+    "type": "clause",
+    "expect_answerable": true,
+    "expect_action": "answer",
+    "expected_keywords": ["圆角", "0.5", "1.5 mm"],
+    "expected_citation": true
+  },
+  {
+    "id": "q6_parallelism",
+    "question": "当键长与键宽之比大于等于 8 时，键宽面的平行度怎么规定？",
+    "type": "clause",
+    "expect_answerable": true,
+    "expect_action": "answer",
+    "expected_keywords": ["平行度", "GB/T 1184", "7级", "6级", "5级"],
+    "expected_citation": true
+  },
+  {
+    "id": "q7_taper_tolerance",
+    "question": "楔键 1:100 斜度的角度公差按什么标准和等级选取？",
+    "type": "clause",
+    "expect_answerable": true,
+    "expect_action": "answer",
+    "expected_keywords": ["GB/T 11334", "AT8", "AT8/2"],
+    "expected_citation": true
+  },
+  {
+    "id": "q8_acceptance_check",
+    "question": "4.5 检查中如何根据合格判定数 Ac 接收或拒收产品？",
+    "type": "clause",
+    "expect_answerable": true,
+    "expect_action": "answer",
+    "expected_keywords": ["随机抽取", "逐项检查", "合格判定数", "Ac", "接收", "拒收"],
+    "expected_citation": true
+  },
+  {
+    "id": "q9_tensile_sampling",
+    "question": "抗拉强度试验的抽样方案是什么？",
+    "type": "clause",
+    "expect_answerable": true,
+    "expect_action": "answer",
+    "expected_keywords": ["AQL", "1.5", "样本", "Ac"],
+    "expected_citation": true
+  },
+  {
+    "id": "q10_table_dimension_check",
+    "question": "表 1 中尺寸检查项目和合格质量水平 AQL 是如何列出的？",
+    "type": "table",
+    "expect_answerable": true,
+    "expect_action": "answer",
+    "expected_keywords": ["表 1", "检查项目", "AQL", "键宽", "键高", "键长"],
+    "expected_citation": true
+  },
+  {
+    "id": "q11_marking",
+    "question": "包装箱或盒表面的标志、标签应包含哪些内容？",
+    "type": "clause",
+    "expect_answerable": true,
+    "expect_action": "answer",
+    "expected_keywords": ["制造厂名", "产品名称", "产品数量", "出厂日期"],
+    "expected_citation": true
+  },
+  {
+    "id": "q12_rust_prevention",
+    "question": "产品包装前的防锈和包装要求是什么？",
+    "type": "clause",
+    "expect_answerable": true,
+    "expect_action": "answer",
+    "expected_keywords": ["防锈剂", "运输", "贮藏", "一年内不生锈"],
+    "expected_citation": true
+  },
+  {
+    "id": "q13_multi_question",
+    "question": "这个标准适用于什么范围？产品包装前有什么防锈要求？",
+    "type": "multi_question",
+    "expect_answerable": true,
+    "expect_action": "answer",
+    "expected_keywords": ["除花键外", "防锈剂"],
+    "expected_citation": true
+  },
+  {
+    "id": "q14_no_answer_engine",
+    "question": "这份标准是否规定了汽车发动机维修流程？",
+    "type": "out_of_scope",
+    "expect_answerable": false,
+    "expect_action": "refuse",
+    "expected_keywords": ["没有找到足够依据"],
+    "expected_citation": false
+  },
+  {
+    "id": "q15_no_answer_weather",
+    "question": "这份标准能告诉我明天上海天气怎么样吗？",
+    "type": "out_of_scope",
+    "expect_answerable": false,
+    "expect_action": "refuse",
+    "expected_keywords": ["没有找到足够依据"],
+    "expected_citation": false
+  },
+  {
+    "id": "q16_no_answer_finance",
+    "question": "这份标准是否建议购买哪只股票？",
+    "type": "out_of_scope",
+    "expect_answerable": false,
+    "expect_action": "refuse",
+    "expected_keywords": ["没有找到足够依据"],
+    "expected_citation": false
+  }
+]
